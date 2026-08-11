@@ -6,15 +6,21 @@ import androidx.compose.runtime.Composable
 
 private val LightColorScheme = lightColorScheme(
     primary = WhatsAppTealGreen,
-    onPrimary = WhatsAppWhite,
+    onPrimary = SurfaceWhite,
     secondary = WhatsAppGreen,
-    onSecondary = WhatsAppWhite,
-    background = WhatsAppWhite,
-    onBackground = WhatsAppTextPrimary,
-    surface = WhatsAppWhite,
-    onSurface = WhatsAppTextPrimary,
-    surfaceVariant = WhatsAppLightGray,
-    onSurfaceVariant = WhatsAppTextSecondary,
+    onSecondary = SurfaceWhite,
+    tertiary = ActionBlue,
+    onTertiary = SurfaceWhite,
+    background = SurfaceWhite,
+    onBackground = TextPrimary,
+    surface = SurfaceWhite,
+    onSurface = TextPrimary,
+    surfaceVariant = SurfaceLightGray,
+    onSurfaceVariant = TextSecondary,
+    error = DestructiveRed,
+    onError = SurfaceWhite,
+    outline = DividerColor,
+    outlineVariant = SystemGray5,
 )
 
 @Composable
