@@ -2,12 +2,8 @@
 
 package com.example.whatsappclone.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -15,6 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.whatsappclone.feature.authorization.PhoneAuthorizationScreen
+import com.example.whatsappclone.feature.authorization.PhoneAuthorizationViewModel
 import com.example.whatsappclone.feature.chats.ChatsScreen
 import com.example.whatsappclone.feature.chats.ChatsViewModel
 import com.example.whatsappclone.feature.conversation.ConversationScreen
@@ -31,7 +29,22 @@ fun WhatsAppNavHost(
         modifier = modifier,
     ) {
         composable<PhoneAuthorizationRoute> {
-            PlaceholderScreen("Phone Authorization")
+            val viewModel: PhoneAuthorizationViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            PhoneAuthorizationScreen(
+                uiState = uiState,
+                onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
+                onCountrySelected = viewModel::onCountrySelected,
+                onCountryPickerToggle = viewModel::onCountryPickerToggle,
+                onDoneClick = {
+                    if (viewModel.submit()) {
+                        navController.navigate(ChatsRoute) {
+                            popUpTo(PhoneAuthorizationRoute) { inclusive = true }
+                        }
+                    }
+                },
+            )
         }
 
         composable<ChatsRoute> {
@@ -57,15 +70,5 @@ fun WhatsAppNavHost(
                 onSendClick = viewModel::sendMessage,
             )
         }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(label: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(text = label)
     }
 }
