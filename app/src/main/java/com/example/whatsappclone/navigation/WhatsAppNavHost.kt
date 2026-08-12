@@ -53,6 +53,7 @@ fun WhatsAppNavHost(
 
             ChatsScreen(
                 uiState = uiState,
+                exportEvent = viewModel.exportEvent,
                 onConversationClick = { conversationId ->
                     navController.navigate(ConversationRoute(contactId = conversationId))
                 },
@@ -64,6 +65,18 @@ fun WhatsAppNavHost(
                 onDeleteRequested = viewModel::onDeleteRequested,
                 onDeleteConfirmed = viewModel::onDeleteConfirmed,
                 onDeleteDismissed = viewModel::onDeleteDismissed,
+                onSwipeArchive = viewModel::onSwipeArchive,
+                onMoreClick = viewModel::onMoreClick,
+                onDismissActionSheet = viewModel::onDismissActionSheet,
+                onMuteToggle = viewModel::onMuteToggle,
+                onContactInfoClick = { viewModel.onDismissActionSheet() },
+                onExportChat = viewModel::onExportChat,
+                onClearChatRequested = viewModel::onClearChatRequested,
+                onClearChatConfirmed = viewModel::onClearChatConfirmed,
+                onClearChatDismissed = viewModel::onClearChatDismissed,
+                onDeleteChatRequested = viewModel::onDeleteChatRequested,
+                onDeleteChatConfirmedFromSheet = viewModel::onDeleteChatConfirmedFromSheet,
+                onDeleteChatDismissedFromSheet = viewModel::onDeleteChatDismissedFromSheet,
             )
         }
 

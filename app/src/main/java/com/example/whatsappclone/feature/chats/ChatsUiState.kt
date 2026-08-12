@@ -8,4 +8,6 @@ data class ChatsUiState(
     val isEditMode: Boolean = false,
     val selectedIds: Set<String> = emptySet(),
     val showDeleteConfirmation: Boolean = false,
+    val actionSheetTarget: ConversationSummary? = null,
+    val showClearConfirmation: Boolean = false,
 )

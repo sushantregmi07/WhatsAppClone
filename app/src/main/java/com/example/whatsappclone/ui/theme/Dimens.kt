@@ -31,6 +31,8 @@ object Dimens {
     // Action sheet
     val ActionSheetCardRadius = 14.dp
     val ActionSheetSpacing = 8.dp
+    val ActionSheetHorizontalMargin = 8.dp
+    val ActionItemHeight = 56.dp
 
     // Composer
     val ComposerInputHeight = 44.dp
