@@ -13,7 +13,9 @@ import java.time.ZoneOffset
 
 /**
  * Deterministic seed data matching SEED_DATA_REFERENCE.md.
- * 50% of names/messages match reference PNGs; 50% are original.
+ * Every user on the Chats page has a corresponding conversation with messages.
+ * Each conversation summary's latestMessage/latestMessageAt is derived from its
+ * actual last message to keep Chats previews synchronized.
  */
 object ChatSeedData {
 
@@ -22,7 +24,6 @@ object ChatSeedData {
             .atTime(LocalTime.of(hour, minute))
             .toInstant(ZoneOffset.UTC)
 
-    // --- Conversation IDs (stable, used across summaries and messages) ---
     const val ID_MARTIN = "conv_martin_randolph"
     const val ID_ELENA = "conv_elena_morales"
     const val ID_KAREN = "conv_karen_castillo"
@@ -32,109 +33,128 @@ object ChatSeedData {
     const val ID_PRIYA = "conv_priya_sharma"
     const val ID_JAMES = "conv_james_thornton"
 
-    // --- Timestamps for each conversation's latest message ---
-    private val tsMartin = dateTime(2019, 11, 19, 14, 0)
-    private val tsElena = dateTime(2019, 11, 16, 9, 30)
-    private val tsKaren = dateTime(2019, 11, 15, 16, 20)
-    private val tsDaniel = dateTime(2019, 10, 30, 11, 15)
-    private val tsMartha = dateTime(2019, 10, 28, 11, 51)
-    private val tsTabitha = dateTime(2019, 8, 25, 18, 45)
-    private val tsPriya = dateTime(2019, 8, 20, 21, 10)
-    private val tsJames = dateTime(2019, 7, 29, 15, 30)
-
-    val conversations: List<ConversationSummary> = listOf(
-        ConversationSummary(
-            id = ID_MARTIN,
-            displayName = "Martin Randolph",
-            avatar = AvatarKey.MARTIN_RANDOLPH,
-            latestMessage = MessageContent.Text("Yes, 2pm is awesome"),
-            latestMessageAt = tsMartin,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
+    // --- Martin Randolph messages ---
+    val martinMessages: List<Message> = listOf(
+        Message(
+            id = "msg_martin_01",
+            conversationId = ID_MARTIN,
+            content = MessageContent.Text("Hey, are you free for lunch tomorrow?"),
+            sentAt = dateTime(2019, 11, 18, 9, 30),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
         ),
-        ConversationSummary(
-            id = ID_ELENA,
-            displayName = "Elena Morales",
-            avatar = AvatarKey.ELENA_MORALES,
-            latestMessage = MessageContent.Text("Have you seen the quarterly report yet?"),
-            latestMessageAt = tsElena,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
+        Message(
+            id = "msg_martin_02",
+            conversationId = ID_MARTIN,
+            content = MessageContent.Text("Sure, what time works for you?"),
+            sentAt = dateTime(2019, 11, 18, 10, 15),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
         ),
-        ConversationSummary(
-            id = ID_KAREN,
-            displayName = "Karen Castillo",
-            avatar = AvatarKey.KAREN_CASTILLO,
-            latestMessage = MessageContent.Voice("0:14"),
-            latestMessageAt = tsKaren,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
+        Message(
+            id = "msg_martin_03",
+            conversationId = ID_MARTIN,
+            content = MessageContent.Text("How about 2pm?"),
+            sentAt = dateTime(2019, 11, 19, 13, 45),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
         ),
-        ConversationSummary(
-            id = ID_DANIEL,
-            displayName = "Daniel Abramov",
-            avatar = AvatarKey.DANIEL_ABRAMOV,
-            latestMessage = MessageContent.Text("Let me check and get back to you"),
-            latestMessageAt = tsDaniel,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
-        ),
-        ConversationSummary(
-            id = ID_MARTHA,
-            displayName = "Martha Craig",
-            avatar = AvatarKey.MARTHA_CRAIG,
-            latestMessage = MessageContent.Photo,
-            latestMessageAt = tsMartha,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
-        ),
-        ConversationSummary(
-            id = ID_TABITHA,
-            displayName = "Tabitha Potter",
-            avatar = AvatarKey.TABITHA_POTTER,
-            latestMessage = MessageContent.Text(
-                "Actually I wanted to check with you about your online business plan on our..."
-            ),
-            latestMessageAt = tsTabitha,
-            unreadCount = 1,
-            isMuted = false,
-            isArchived = false,
-        ),
-        ConversationSummary(
-            id = ID_PRIYA,
-            displayName = "Priya Sharma",
-            avatar = AvatarKey.PRIYA_SHARMA,
-            latestMessage = MessageContent.Text(
-                "Thanks for the feedback, I'll update the draft tonight"
-            ),
-            latestMessageAt = tsPriya,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
-        ),
-        ConversationSummary(
-            id = ID_JAMES,
-            displayName = "James Thornton",
-            avatar = AvatarKey.JAMES_THORNTON,
-            latestMessage = MessageContent.Text("See you at the airport!"),
-            latestMessageAt = tsJames,
-            unreadCount = 0,
-            isMuted = false,
-            isArchived = false,
+        Message(
+            id = "msg_martin_04",
+            conversationId = ID_MARTIN,
+            content = MessageContent.Text("Yes, 2pm is awesome"),
+            sentAt = dateTime(2019, 11, 19, 14, 0),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
         ),
     )
 
-    /**
-     * Martha Craig conversation messages in chronological order.
-     * Only Martha has a full message thread; other contacts show only previews.
-     */
-    val marthaCraigMessages: List<Message> = listOf(
-        // Jul 25 — before the date separator
+    // --- Elena Morales messages ---
+    val elenaMessages: List<Message> = listOf(
+        Message(
+            id = "msg_elena_01",
+            conversationId = ID_ELENA,
+            content = MessageContent.Text("I sent the updated slides to the team just now"),
+            sentAt = dateTime(2019, 11, 15, 16, 0),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_elena_02",
+            conversationId = ID_ELENA,
+            content = MessageContent.Text("Great, I'll review them tonight"),
+            sentAt = dateTime(2019, 11, 15, 17, 30),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_elena_03",
+            conversationId = ID_ELENA,
+            content = MessageContent.Text("Have you seen the quarterly report yet?"),
+            sentAt = dateTime(2019, 11, 16, 9, 30),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+    )
+
+    // --- Karen Castillo messages ---
+    val karenMessages: List<Message> = listOf(
+        Message(
+            id = "msg_karen_01",
+            conversationId = ID_KAREN,
+            content = MessageContent.Text("Can you call me when you get a chance?"),
+            sentAt = dateTime(2019, 11, 14, 11, 0),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_karen_02",
+            conversationId = ID_KAREN,
+            content = MessageContent.Text("Sure, I'll call you after my meeting"),
+            sentAt = dateTime(2019, 11, 14, 11, 30),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_karen_03",
+            conversationId = ID_KAREN,
+            content = MessageContent.Voice("0:14"),
+            sentAt = dateTime(2019, 11, 15, 16, 20),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+    )
+
+    // --- Daniel Abramov messages ---
+    val danielMessages: List<Message> = listOf(
+        Message(
+            id = "msg_daniel_01",
+            conversationId = ID_DANIEL,
+            content = MessageContent.Text("Did you get the package I sent last week?"),
+            sentAt = dateTime(2019, 10, 29, 14, 0),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_daniel_02",
+            conversationId = ID_DANIEL,
+            content = MessageContent.Text("Not yet, I think it might be delayed because of the holiday weekend"),
+            sentAt = dateTime(2019, 10, 29, 15, 20),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_daniel_03",
+            conversationId = ID_DANIEL,
+            content = MessageContent.Text("Let me check and get back to you"),
+            sentAt = dateTime(2019, 10, 30, 11, 15),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+    )
+
+    // --- Martha Craig messages (full thread from SEED_DATA_REFERENCE) ---
+    val marthaMessages: List<Message> = listOf(
         Message(
             id = "msg_martha_01",
             conversationId = ID_MARTHA,
@@ -143,7 +163,6 @@ object ChatSeedData {
             direction = MessageDirection.SENT,
             deliveryStatus = DeliveryStatus.READ,
         ),
-        // Jul 26 — after "Fri, Jul 26" date separator
         Message(
             id = "msg_martha_02",
             conversationId = ID_MARTHA,
@@ -232,7 +251,7 @@ object ChatSeedData {
                 sizeLabel = "2.8 MB",
                 extension = "png",
             ),
-            sentAt = dateTime(2019, 7, 26, 11, 51),
+            sentAt = dateTime(2019, 10, 28, 11, 51),
             direction = MessageDirection.SENT,
             deliveryStatus = DeliveryStatus.READ,
         ),
@@ -244,9 +263,153 @@ object ChatSeedData {
                 sizeLabel = "2.2 MB",
                 extension = "png",
             ),
-            sentAt = dateTime(2019, 7, 26, 11, 51),
+            sentAt = dateTime(2019, 10, 28, 11, 51),
             direction = MessageDirection.SENT,
             deliveryStatus = DeliveryStatus.READ,
         ),
     )
+
+    // --- Tabitha Potter messages ---
+    val tabithaMessages: List<Message> = listOf(
+        Message(
+            id = "msg_tabitha_01",
+            conversationId = ID_TABITHA,
+            content = MessageContent.Text("Hi! Long time no see"),
+            sentAt = dateTime(2019, 8, 24, 10, 0),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_tabitha_02",
+            conversationId = ID_TABITHA,
+            content = MessageContent.Text("Hey! Yes it's been a while, how are you doing?"),
+            sentAt = dateTime(2019, 8, 24, 12, 30),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_tabitha_03",
+            conversationId = ID_TABITHA,
+            content = MessageContent.Text(
+                "Actually I wanted to check with you about your online business plan on our..."
+            ),
+            sentAt = dateTime(2019, 8, 25, 18, 45),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+    )
+
+    // --- Priya Sharma messages ---
+    val priyaMessages: List<Message> = listOf(
+        Message(
+            id = "msg_priya_01",
+            conversationId = ID_PRIYA,
+            content = MessageContent.Text("Could you review the design mockups I uploaded?"),
+            sentAt = dateTime(2019, 8, 19, 15, 0),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_priya_02",
+            conversationId = ID_PRIYA,
+            content = MessageContent.Text("They look really good overall, just a few minor notes on the color palette"),
+            sentAt = dateTime(2019, 8, 20, 14, 30),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_priya_03",
+            conversationId = ID_PRIYA,
+            content = MessageContent.Text(
+                "Thanks for the feedback, I'll update the draft tonight"
+            ),
+            sentAt = dateTime(2019, 8, 20, 21, 10),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+    )
+
+    // --- James Thornton messages ---
+    val jamesMessages: List<Message> = listOf(
+        Message(
+            id = "msg_james_01",
+            conversationId = ID_JAMES,
+            content = MessageContent.Text("Flight confirmed for next Friday. Terminal 2, gate B7"),
+            sentAt = dateTime(2019, 7, 28, 20, 0),
+            direction = MessageDirection.RECEIVED,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_james_02",
+            conversationId = ID_JAMES,
+            content = MessageContent.Text("Perfect, I'll pick you up. What time does it land?"),
+            sentAt = dateTime(2019, 7, 29, 8, 15),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+        Message(
+            id = "msg_james_03",
+            conversationId = ID_JAMES,
+            content = MessageContent.Text("See you at the airport!"),
+            sentAt = dateTime(2019, 7, 29, 15, 30),
+            direction = MessageDirection.SENT,
+            deliveryStatus = DeliveryStatus.READ,
+        ),
+    )
+
+    /**
+     * All messages keyed by conversation ID.
+     * Used by InMemoryChatRepository to provide per-user conversations.
+     */
+    val allMessages: Map<String, List<Message>> = mapOf(
+        ID_MARTIN to martinMessages,
+        ID_ELENA to elenaMessages,
+        ID_KAREN to karenMessages,
+        ID_DANIEL to danielMessages,
+        ID_MARTHA to marthaMessages,
+        ID_TABITHA to tabithaMessages,
+        ID_PRIYA to priyaMessages,
+        ID_JAMES to jamesMessages,
+    )
+
+    /**
+     * Builds conversation summaries from the actual message data.
+     * The latestMessage and latestMessageAt are derived from each conversation's
+     * actual last message so Chats previews stay synchronized.
+     */
+    val conversations: List<ConversationSummary> by lazy {
+        data class ConvMeta(
+            val id: String,
+            val displayName: String,
+            val avatar: AvatarKey,
+            val unreadCount: Int = 0,
+        )
+
+        val metas = listOf(
+            ConvMeta(ID_MARTIN, "Martin Randolph", AvatarKey.MARTIN_RANDOLPH),
+            ConvMeta(ID_ELENA, "Elena Morales", AvatarKey.ELENA_MORALES),
+            ConvMeta(ID_KAREN, "Karen Castillo", AvatarKey.KAREN_CASTILLO),
+            ConvMeta(ID_DANIEL, "Daniel Abramov", AvatarKey.DANIEL_ABRAMOV),
+            ConvMeta(ID_MARTHA, "Martha Craig", AvatarKey.MARTHA_CRAIG),
+            ConvMeta(ID_TABITHA, "Tabitha Potter", AvatarKey.TABITHA_POTTER, unreadCount = 1),
+            ConvMeta(ID_PRIYA, "Priya Sharma", AvatarKey.PRIYA_SHARMA),
+            ConvMeta(ID_JAMES, "James Thornton", AvatarKey.JAMES_THORNTON),
+        )
+
+        metas.map { meta ->
+            val messages = allMessages[meta.id].orEmpty()
+            val lastMsg = messages.lastOrNull()
+            val previewContent: MessageContent? = lastMsg?.content
+            ConversationSummary(
+                id = meta.id,
+                displayName = meta.displayName,
+                avatar = meta.avatar,
+                latestMessage = previewContent,
+                latestMessageAt = lastMsg?.sentAt,
+                unreadCount = meta.unreadCount,
+                isMuted = false,
+                isArchived = false,
+            )
+        }
+    }
 }

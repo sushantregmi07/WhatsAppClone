@@ -8,8 +8,8 @@ val WhatsAppTealGreen = Color(0xFF128C7E)
 val WhatsAppTealGreenDark = Color(0xFF075E54)
 
 // Bubbles
-val BubbleSent = Color(0xFFDCF8C6)
-val BubbleReceived = Color(0xFFFFFFFF)
+val BubbleSent = Color(0xFFDCF7C5)
+val BubbleReceived = Color(0xFFFAFAFA)
 
 // Wallpaper fallback tint
 val WallpaperBackground = Color(0xFFECE5DD)
@@ -26,7 +26,7 @@ val TextSecondary = Color(0xFF8E8E93)
 val ActionBlue = Color(0xFF007AFF)
 
 // Delivery & voice indicators
-val ReadReceiptBlue = Color(0xFF34B7F1)
+val ReadReceiptBlue = Color(0xFF3497F9)
 val VoiceIndicatorGreen = Color(0xFF34C759) // RC1: green, not orange
 val PhotoIndicatorGray = Color(0xFF8E8E93)
 
@@ -49,8 +49,12 @@ val DisabledGray = Color(0xFFC7C7CC)
 val DividerColor = Color(0xFFC6C6C8)
 
 // Document attachment metadata
-val DocumentSizeGreen = Color(0xFF4CD964)
+val DocumentSizeGreen = Color(0xFFDCF7C5)
 val DocumentIconBlue = Color(0xFF34B7F1)
+val DocumentSurfaceGreen = Color(0x1F767680)
 
 // System gray variants
 val SystemGray5 = Color(0xFFE5E5EA)
+
+//More Grey Varient
+val MoreSettingsBg = Color(0xFFC6C6C8)

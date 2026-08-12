@@ -47,22 +47,109 @@ class InMemoryChatRepositoryTest {
     }
 
     @Test
-    fun initialMessages_otherConversationsHaveNoMessages() = runTest {
+    fun initialMessages_everyUserHasSeededMessages() = runTest {
+        val allIds = listOf(
+            ChatSeedData.ID_MARTIN, ChatSeedData.ID_ELENA,
+            ChatSeedData.ID_KAREN, ChatSeedData.ID_DANIEL,
+            ChatSeedData.ID_MARTHA, ChatSeedData.ID_TABITHA,
+            ChatSeedData.ID_PRIYA, ChatSeedData.ID_JAMES,
+        )
+        for (id in allIds) {
+            val messages = repo.observeMessages(id).first()
+            assertTrue("Conversation $id should have messages", messages.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun initialMessages_martinHasFourMessages() = runTest {
         val messages = repo.observeMessages(ChatSeedData.ID_MARTIN).first()
-        assertTrue(messages.isEmpty())
+        assertEquals(4, messages.size)
+    }
+
+    @Test
+    fun initialMessages_messageIdsAreUniqueAcrossAllConversations() = runTest {
+        val allIds = ChatSeedData.allMessages.values.flatten().map { it.id }
+        assertEquals(allIds.size, allIds.toSet().size)
+    }
+
+    @Test
+    fun initialMessages_areOrderedChronologically() = runTest {
+        for ((convId, messages) in ChatSeedData.allMessages) {
+            for (i in 0 until messages.size - 1) {
+                assertTrue(
+                    "Messages in $convId should be chronological at index $i",
+                    messages[i].sentAt <= messages[i + 1].sentAt,
+                )
+            }
+        }
+    }
+
+    @Test
+    fun initialMessages_conversationIdsMatchMessageConversationIds() = runTest {
+        for ((convId, messages) in ChatSeedData.allMessages) {
+            for (msg in messages) {
+                assertEquals(
+                    "Message ${msg.id} should belong to $convId",
+                    convId, msg.conversationId,
+                )
+            }
+        }
+    }
+
+    @Test
+    fun latestMessagePreview_matchesActualLastMessage() = runTest {
+        val conversations = repo.observeConversations().first()
+        for (conv in conversations) {
+            val messages = repo.observeMessages(conv.id).first()
+            if (messages.isEmpty()) continue
+            val lastMsg = messages.last()
+
+            assertEquals(
+                "Preview for ${conv.displayName} should match latest message",
+                lastMsg.content, conv.latestMessage,
+            )
+            assertEquals(
+                "Preview time for ${conv.displayName} should match latest message",
+                lastMsg.sentAt, conv.latestMessageAt,
+            )
+        }
+    }
+
+    @Test
+    fun seedData_containsDocumentMessages() = runTest {
+        val allMessages = ChatSeedData.allMessages.values.flatten()
+        assertTrue(
+            "Seed data should have at least one Document message",
+            allMessages.any { it.content is MessageContent.Document },
+        )
+    }
+
+    @Test
+    fun seedData_containsOneLineAndTwoLineTextMessages() {
+        val allTexts = ChatSeedData.allMessages.values.flatten()
+            .mapNotNull { (it.content as? MessageContent.Text)?.value }
+        assertTrue(
+            "Should have a short one-line message",
+            allTexts.any { it.length <= 30 },
+        )
+        assertTrue(
+            "Should have a longer two-line message candidate",
+            allTexts.any { it.length > 40 },
+        )
     }
 
     // --- Send text message ---
 
     @Test
     fun sendTextMessage_appendsAndUpdatesPreview() = runTest {
+        val beforeCount = repo.observeMessages(ChatSeedData.ID_MARTIN).first().size
         repo.sendTextMessage(ChatSeedData.ID_MARTIN, "Hello there!")
 
         val messages = repo.observeMessages(ChatSeedData.ID_MARTIN).first()
-        assertEquals(1, messages.size)
+        assertEquals(beforeCount + 1, messages.size)
         assertEquals(
             MessageContent.Text("Hello there!"),
-            messages[0].content,
+            messages.last().content,
         )
 
         val conv = repo.observeConversation(ChatSeedData.ID_MARTIN).first()
@@ -72,12 +159,13 @@ class InMemoryChatRepositoryTest {
 
     @Test
     fun sendTextMessage_trimsWhitespace() = runTest {
+        val beforeCount = repo.observeMessages(ChatSeedData.ID_MARTIN).first().size
         repo.sendTextMessage(ChatSeedData.ID_MARTIN, "  padded message  ")
 
         val messages = repo.observeMessages(ChatSeedData.ID_MARTIN).first()
         assertEquals(
             MessageContent.Text("padded message"),
-            messages[0].content,
+            messages[beforeCount].content,
         )
     }
 
@@ -87,6 +175,15 @@ class InMemoryChatRepositoryTest {
 
         val conversations = repo.observeConversations().first()
         assertEquals(ChatSeedData.ID_JAMES, conversations[0].id)
+    }
+
+    @Test
+    fun sendTextMessage_updatesOnlyTargetConversationPreview() = runTest {
+        val elenaPreviewBefore = repo.observeConversation(ChatSeedData.ID_ELENA).first()!!.latestMessage
+        repo.sendTextMessage(ChatSeedData.ID_MARTIN, "Test message")
+
+        val elenaPreviewAfter = repo.observeConversation(ChatSeedData.ID_ELENA).first()!!.latestMessage
+        assertEquals(elenaPreviewBefore, elenaPreviewAfter)
     }
 
     // --- Blank message defense ---
@@ -102,9 +199,11 @@ class InMemoryChatRepositoryTest {
 
     @Test
     fun sendTextMessage_emptyIsRejected() = runTest {
+        val before = repo.observeMessages(ChatSeedData.ID_MARTIN).first()
         repo.sendTextMessage(ChatSeedData.ID_MARTIN, "")
-        val messages = repo.observeMessages(ChatSeedData.ID_MARTIN).first()
-        assertTrue(messages.isEmpty())
+        val after = repo.observeMessages(ChatSeedData.ID_MARTIN).first()
+
+        assertEquals(before.size, after.size)
     }
 
     // --- Archive ---
@@ -188,5 +287,24 @@ class InMemoryChatRepositoryTest {
 
         val conversations = repo.observeConversations().first()
         assertEquals(5, conversations.size)
+    }
+
+    // --- Determinism ---
+
+    @Test
+    fun seedData_isDeterministic() {
+        val repo1 = InMemoryChatRepository()
+        val repo2 = InMemoryChatRepository()
+
+        val allIds = ChatSeedData.allMessages.keys
+        for (id in allIds) {
+            val msgs1 = ChatSeedData.allMessages[id]!!
+            val msgs2 = ChatSeedData.allMessages[id]!!
+            assertEquals(msgs1.size, msgs2.size)
+            for (i in msgs1.indices) {
+                assertEquals(msgs1[i].id, msgs2[i].id)
+                assertEquals(msgs1[i].sentAt, msgs2[i].sentAt)
+            }
+        }
     }
 }

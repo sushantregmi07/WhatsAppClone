@@ -102,6 +102,24 @@ class ConversationViewModelTest {
     }
 
     @Test
+    fun differentUsers_loadDifferentConversations() = runTest {
+        val vmMartin = createViewModel(ChatSeedData.ID_MARTIN)
+        val martinMessages = vmMartin.uiState.value.messages
+
+        val vmElena = createViewModel(ChatSeedData.ID_ELENA)
+        val elenaMessages = vmElena.uiState.value.messages
+
+        assertEquals("Martin Randolph", vmMartin.uiState.value.contactName)
+        assertEquals("Elena Morales", vmElena.uiState.value.contactName)
+        assertTrue("Martin should have messages", martinMessages.isNotEmpty())
+        assertTrue("Elena should have messages", elenaMessages.isNotEmpty())
+        assertTrue(
+            "Martin and Elena should have different messages",
+            martinMessages.map { it.id }.toSet() != elenaMessages.map { it.id }.toSet(),
+        )
+    }
+
+    @Test
     fun sendMessage_updatesConversationSummaryPreview() = runTest {
         val vm = createViewModel(ChatSeedData.ID_MARTHA)
         val uniqueText = "M10 round-trip test ${System.nanoTime()}"

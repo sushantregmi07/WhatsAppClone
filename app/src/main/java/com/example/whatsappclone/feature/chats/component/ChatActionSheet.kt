@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,10 +32,10 @@ import com.example.whatsappclone.ui.theme.ActionBlue
 import com.example.whatsappclone.ui.theme.ActionSheetScrim
 import com.example.whatsappclone.ui.theme.DestructiveRed
 import com.example.whatsappclone.ui.theme.Dimens
-import com.example.whatsappclone.ui.theme.SystemGray5
 
 private val CardShape = RoundedCornerShape(Dimens.ActionSheetCardRadius)
-private val GroupedCardBackground = Color(0xFFECECED)
+private val GroupedCardBackground = Color(0xF2F2F7F7) // iOS Action Sheet Card background
+private val ActionSheetDividerColor = Color(0xFFC6C6C8) // iOS Separator color
 
 @Composable
 fun ChatActionSheet(
@@ -135,21 +136,22 @@ private fun ActionItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(Dimens.ActionItemHeight)
-            .background(Color.White)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
+            fontFamily = FontFamily.Default,
             fontSize = 20.sp,
             fontWeight = fontWeight,
             color = color,
             textAlign = TextAlign.Center,
+            letterSpacing = 0.33.sp,
         )
     }
 }
 
 @Composable
 private fun ActionDivider() {
-    HorizontalDivider(thickness = 0.5.dp, color = SystemGray5)
+    HorizontalDivider(thickness = 0.5.dp, color = ActionSheetDividerColor)
 }

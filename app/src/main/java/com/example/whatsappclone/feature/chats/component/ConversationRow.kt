@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -154,10 +155,9 @@ private fun PreviewContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (latestMessage != null && unreadCount == 0) {
-            val showReceipt = latestMessage !is MessageContent.Voice &&
-                latestMessage !is MessageContent.Photo ||
-                unreadCount == 0 && latestMessage is MessageContent.Text
-            if (latestMessage is MessageContent.Text || latestMessage is MessageContent.Document) {
+            if (latestMessage is MessageContent.Text ||
+                latestMessage is MessageContent.Document
+            ) {
                 ReadReceiptIcon(
                     isRead = true,
                     size = 14.dp,
@@ -230,6 +230,7 @@ private fun UnreadBadge(count: Int) {
     ) {
         Text(
             text = count.toString(),
+            fontFamily = FontFamily.Default,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,

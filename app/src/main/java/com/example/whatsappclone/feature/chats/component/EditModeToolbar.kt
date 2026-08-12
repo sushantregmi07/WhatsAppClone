@@ -33,15 +33,18 @@ fun EditModeToolbar(
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(ToolbarSurface)
+            .windowInsetsPadding(WindowInsets.navigationBars),
+    ) {
         HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFC6C6C8))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(ToolbarSurface)
-                .height(Dimens.BottomTabBarHeight)
-                .windowInsetsPadding(WindowInsets.navigationBars),
+                .height(Dimens.BottomTabBarHeight),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {

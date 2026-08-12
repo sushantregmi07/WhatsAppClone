@@ -24,9 +24,7 @@ class InMemoryChatRepository @Inject constructor() : ChatRepository {
     )
 
     private val messagesState = MutableStateFlow(
-        ChatSeedData.marthaCraigMessages
-            .groupBy { it.conversationId }
-            .toMutableMap() as Map<String, List<Message>>
+        ChatSeedData.allMessages.toMap()
     )
 
     override fun observeConversations(): Flow<List<ConversationSummary>> =

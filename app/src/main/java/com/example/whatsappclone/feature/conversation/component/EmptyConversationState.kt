@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ fun EmptyConversationState(modifier: Modifier = Modifier) {
 
         Text(
             text = "No messages yet",
+            fontFamily = FontFamily.Default,
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             color = TextSecondary,
@@ -47,6 +49,7 @@ fun EmptyConversationState(modifier: Modifier = Modifier) {
 
         Text(
             text = "Say hello!",
+            fontFamily = FontFamily.Default,
             fontSize = 15.sp,
             color = TextSecondary,
             textAlign = TextAlign.Center,

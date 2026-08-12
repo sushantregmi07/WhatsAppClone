@@ -31,6 +31,7 @@ import com.example.whatsappclone.feature.conversation.component.DateSeparator
 import com.example.whatsappclone.feature.conversation.component.DocumentMessageBubble
 import com.example.whatsappclone.feature.conversation.component.EmptyConversationState
 import com.example.whatsappclone.feature.conversation.component.MessageBubble
+import com.example.whatsappclone.feature.conversation.component.ReceivedVoiceMessageBubble
 import com.example.whatsappclone.ui.theme.ActionBlue
 import kotlinx.coroutines.launch
 import java.time.ZoneId
@@ -169,13 +170,24 @@ fun ConversationScreen(
                                                 deliveryStatus = msg.deliveryStatus,
                                             )
                                         }
-                                        is MessageContent.Voice,
+                                        is MessageContent.Voice -> {
+                                            if (msg.direction == MessageDirection.RECEIVED) {
+                                                ReceivedVoiceMessageBubble(
+                                                    duration = content.durationLabel,
+                                                    timestamp = timestamp,
+                                                )
+                                            } else {
+                                                MessageBubble(
+                                                    text = "Voice: ${content.durationLabel}",
+                                                    timestamp = timestamp,
+                                                    direction = msg.direction,
+                                                    deliveryStatus = msg.deliveryStatus,
+                                                )
+                                            }
+                                        }
                                         is MessageContent.Photo -> {
                                             MessageBubble(
-                                                text = when (content) {
-                                                    is MessageContent.Voice -> "Voice: ${content.durationLabel}"
-                                                    else -> "Photo"
-                                                },
+                                                text = "Photo",
                                                 timestamp = timestamp,
                                                 direction = msg.direction,
                                                 deliveryStatus = msg.deliveryStatus,

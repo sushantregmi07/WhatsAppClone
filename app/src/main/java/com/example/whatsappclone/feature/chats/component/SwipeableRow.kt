@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,7 +85,7 @@ fun SwipeableRow(
                         tint = Color.White,
                         modifier = Modifier.size(22.dp),
                     )
-                    Text(text = "More", color = Color.White, fontSize = 12.sp)
+                    Text(text = "More", fontFamily = FontFamily.Default, color = Color.White, fontSize = 12.sp)
                 }
             }
 
@@ -107,7 +108,7 @@ fun SwipeableRow(
                         tint = Color.White,
                         modifier = Modifier.size(22.dp),
                     )
-                    Text(text = "Archive", color = Color.White, fontSize = 12.sp)
+                    Text(text = "Archive", fontFamily = FontFamily.Default, color = Color.White, fontSize = 12.sp)
                 }
             }
         }

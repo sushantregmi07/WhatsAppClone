@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclone.domain.model.DeliveryStatus
@@ -28,8 +29,11 @@ import com.example.whatsappclone.ui.components.ReadReceiptIcon
 import com.example.whatsappclone.ui.theme.BubbleSent
 import com.example.whatsappclone.ui.theme.Dimens
 import com.example.whatsappclone.ui.theme.DocumentSizeGreen
+import com.example.whatsappclone.ui.theme.DocumentSurfaceGreen
 import com.example.whatsappclone.ui.theme.SentBubbleShape
 import com.example.whatsappclone.ui.theme.TextSecondary
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun DocumentMessageBubble(
@@ -40,8 +44,6 @@ fun DocumentMessageBubble(
     deliveryStatus: DeliveryStatus,
     modifier: Modifier = Modifier,
 ) {
-    val maxWidth = (LocalConfiguration.current.screenWidthDp * Dimens.BubbleMaxWidthFraction).dp
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -50,31 +52,31 @@ fun DocumentMessageBubble(
     ) {
         Column(
             modifier = Modifier
-                .widthIn(max = maxWidth)
+                .width(IntrinsicSize.Min)
                 .background(
                     color = BubbleSent,
                     shape = SentBubbleShape,
                 )
-                .padding(
-                    horizontal = Dimens.BubblePaddingHorizontal,
-                    vertical = Dimens.BubblePaddingVertical,
-                ),
+                .padding(6.dp),
         ) {
             Surface(
-                shape = RoundedCornerShape(10.dp),
-                color = Color.White,
-                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                color = DocumentSurfaceGreen,
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(42.dp),
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    DocumentFileIcon(size = 32.dp)
-                    Spacer(modifier = Modifier.width(10.dp))
+                    DocumentFileIcon(size = 24.dp)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = fileName,
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -89,17 +91,20 @@ fun DocumentMessageBubble(
                 Row {
                     Text(
                         text = sizeLabel,
-                        fontSize = 12.sp,
+                        fontFamily = FontFamily.Default,
+                        fontSize = 11.sp,
                         color = DocumentSizeGreen,
                     )
                     Text(
                         text = " \u00B7 ",
-                        fontSize = 12.sp,
+                        fontFamily = FontFamily.Default,
+                        fontSize = 11.sp,
                         color = DocumentSizeGreen,
                     )
                     Text(
                         text = extension,
-                        fontSize = 12.sp,
+                        fontFamily = FontFamily.Default,
+                        fontSize = 11.sp,
                         color = DocumentSizeGreen,
                     )
                 }
@@ -108,12 +113,13 @@ fun DocumentMessageBubble(
                     Text(
                         text = timestamp,
                         style = MaterialTheme.typography.labelSmall,
+                        fontSize = 10.sp,
                         color = TextSecondary,
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(2.dp))
                     ReadReceiptIcon(
                         isRead = deliveryStatus == DeliveryStatus.READ,
-                        size = 14.dp,
+                        size = 12.dp,
                     )
                 }
             }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsappclone.ui.theme.ActionBlue
@@ -54,7 +55,12 @@ fun WhatsAppBottomBar(
     onTabClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(BottomBarSurface)
+            .windowInsetsPadding(WindowInsets.navigationBars),
+    ) {
         HorizontalDivider(
             thickness = 0.5.dp,
             color = Color(0xFFC6C6C8),
@@ -62,9 +68,7 @@ fun WhatsAppBottomBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(BottomBarSurface)
-                .height(Dimens.BottomTabBarHeight)
-                .windowInsetsPadding(WindowInsets.navigationBars),
+                .height(Dimens.BottomTabBarHeight),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -86,6 +90,7 @@ fun WhatsAppBottomBar(
                     )
                     Text(
                         text = tab.label,
+                        fontFamily = FontFamily.Default,
                         fontSize = 10.sp,
                         color = tint,
                     )

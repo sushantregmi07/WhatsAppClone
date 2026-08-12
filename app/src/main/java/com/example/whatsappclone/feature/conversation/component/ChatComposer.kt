@@ -3,12 +3,15 @@ package com.example.whatsappclone.feature.conversation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -47,8 +50,9 @@ fun ChatComposer(
         modifier = modifier
             .fillMaxWidth()
             .background(ComposerSurface)
+            .windowInsetsPadding(WindowInsets.navigationBars)
             .imePadding()
-            .padding(horizontal = 8.dp, vertical = 6.dp),
+            .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = {}, modifier = Modifier.size(Dimens.ComposerIconSize)) {
@@ -59,7 +63,8 @@ fun ChatComposer(
             )
         }
 
-        Spacer(modifier = Modifier.width(4.dp))
+        // Spacing between '+' and text box
+        Spacer(modifier = Modifier.width(10.dp))
 
         OutlinedTextField(
             value = text,
@@ -88,7 +93,8 @@ fun ChatComposer(
             keyboardActions = KeyboardActions(onSend = { if (hasText) onSendClick() }),
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        // Spacing between text box and camera icon (matched with camera-to-mic gap)
+        Spacer(modifier = Modifier.width(12.dp))
 
         IconButton(onClick = {}, modifier = Modifier.size(Dimens.ComposerIconSize)) {
             Icon(
@@ -97,6 +103,9 @@ fun ChatComposer(
                 tint = TextSecondary,
             )
         }
+
+        // Spacing between camera and mic/send icon
+        Spacer(modifier = Modifier.width(12.dp))
 
         if (hasText) {
             IconButton(onClick = onSendClick, modifier = Modifier.size(Dimens.ComposerIconSize)) {
