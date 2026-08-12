@@ -7,4 +7,6 @@ sealed interface MessageContent {
         val sizeLabel: String,
         val extension: String,
     ) : MessageContent
+    data class Voice(val durationLabel: String) : MessageContent
+    data object Photo : MessageContent
 }

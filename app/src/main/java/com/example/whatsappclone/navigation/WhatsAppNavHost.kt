@@ -1,16 +1,23 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.whatsappclone.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.whatsappclone.feature.chats.ChatsScreen
+import com.example.whatsappclone.feature.chats.ChatsViewModel
 
 @Composable
 fun WhatsAppNavHost(
@@ -27,7 +34,15 @@ fun WhatsAppNavHost(
         }
 
         composable<ChatsRoute> {
-            PlaceholderScreen("Chats")
+            val viewModel: ChatsViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ChatsScreen(
+                uiState = uiState,
+                onConversationClick = { conversationId ->
+                    navController.navigate(ConversationRoute(contactId = conversationId))
+                },
+            )
         }
 
         composable<ConversationRoute> { backStackEntry ->
