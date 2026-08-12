@@ -26,7 +26,9 @@ private val TopBarSurface = Color(0xFFF6F6F6)
 
 @Composable
 fun ChatsTopBar(
+    isEditMode: Boolean,
     onEditClick: () -> Unit,
+    onDoneClick: () -> Unit,
     onComposeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -37,33 +39,45 @@ fun ChatsTopBar(
             .windowInsetsPadding(WindowInsets.statusBars)
             .height(Dimens.TopBarHeight),
     ) {
-        Text(
-            text = "Edit",
-            style = MaterialTheme.typography.titleMedium,
-            color = ActionBlue,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .clickable(onClick = onEditClick)
-                .padding(horizontal = Dimens.ChatRowHorizontalPadding),
-        )
-
-        Text(
-            text = "Chats",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.align(Alignment.Center),
-        )
-
-        IconButton(
-            onClick = onComposeClick,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = Dimens.SpacingSm),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Edit,
-                contentDescription = "New chat",
-                tint = ActionBlue,
+        if (isEditMode) {
+            Text(
+                text = "Done",
+                style = MaterialTheme.typography.titleMedium,
+                color = ActionBlue,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .clickable(onClick = onDoneClick)
+                    .padding(horizontal = Dimens.ChatRowHorizontalPadding),
             )
+        } else {
+            Text(
+                text = "Edit",
+                style = MaterialTheme.typography.titleMedium,
+                color = ActionBlue,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .clickable(onClick = onEditClick)
+                    .padding(horizontal = Dimens.ChatRowHorizontalPadding),
+            )
+
+            Text(
+                text = "Chats",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.align(Alignment.Center),
+            )
+
+            IconButton(
+                onClick = onComposeClick,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = Dimens.SpacingSm),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Edit,
+                    contentDescription = "New chat",
+                    tint = ActionBlue,
+                )
+            }
         }
     }
 }

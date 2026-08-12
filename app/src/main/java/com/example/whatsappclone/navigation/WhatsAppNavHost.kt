@@ -56,6 +56,14 @@ fun WhatsAppNavHost(
                 onConversationClick = { conversationId ->
                     navController.navigate(ConversationRoute(contactId = conversationId))
                 },
+                onEditClick = viewModel::onEditClick,
+                onDoneClick = viewModel::onDoneClick,
+                onToggleSelection = viewModel::onToggleSelection,
+                onArchiveSelected = viewModel::onArchiveSelected,
+                onMarkAllRead = viewModel::onMarkAllRead,
+                onDeleteRequested = viewModel::onDeleteRequested,
+                onDeleteConfirmed = viewModel::onDeleteConfirmed,
+                onDeleteDismissed = viewModel::onDeleteDismissed,
             )
         }
 

@@ -47,6 +47,8 @@ fun ConversationRow(
     conversation: ConversationSummary,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isEditMode: Boolean = false,
+    isSelected: Boolean = false,
     showDivider: Boolean = true,
 ) {
     Column(modifier = modifier) {
@@ -60,6 +62,11 @@ fun ConversationRow(
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            if (isEditMode) {
+                CircularCheckbox(checked = isSelected)
+                Spacer(modifier = Modifier.width(Dimens.SpacingSm))
+            }
+
             AvatarImage(
                 avatarKey = conversation.avatar,
                 displayName = conversation.displayName,
@@ -112,12 +119,14 @@ fun ConversationRow(
                         UnreadBadge(count = conversation.unreadCount)
                     }
 
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        tint = TextSecondary,
-                        modifier = Modifier.size(20.dp),
-                    )
+                    if (!isEditMode) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = TextSecondary,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
                 }
             }
         }
