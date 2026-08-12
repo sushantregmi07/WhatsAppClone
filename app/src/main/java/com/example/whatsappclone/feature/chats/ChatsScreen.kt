@@ -26,6 +26,8 @@ import com.example.whatsappclone.feature.chats.component.ChatsTopBar
 import com.example.whatsappclone.feature.chats.component.ConversationRow
 import com.example.whatsappclone.feature.chats.component.EditModeHeader
 import com.example.whatsappclone.feature.chats.component.EditModeToolbar
+import com.example.whatsappclone.feature.chats.component.EmptyChatsState
+import com.example.whatsappclone.feature.chats.component.ShimmerRow
 import com.example.whatsappclone.feature.chats.component.SwipeableRow
 import com.example.whatsappclone.feature.chats.component.WhatsAppBottomBar
 import com.example.whatsappclone.ui.theme.DestructiveRed
@@ -158,34 +160,48 @@ fun ChatsScreen(
                 EditModeHeader()
             }
 
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-            ) {
-                itemsIndexed(
-                    items = uiState.conversations,
-                    key = { _, conv -> conv.id },
-                ) { index, conversation ->
-                    if (uiState.isEditMode) {
-                        ConversationRow(
-                            conversation = conversation,
-                            onClick = { onToggleSelection(conversation.id) },
-                            isEditMode = true,
-                            isSelected = conversation.id in uiState.selectedIds,
-                            showDivider = index < uiState.conversations.size - 1,
-                        )
-                    } else {
-                        SwipeableRow(
-                            rowId = conversation.id,
-                            isOpen = openRowId == conversation.id,
-                            onOpenChanged = { newId -> openRowId = newId },
-                            onMoreClick = { onMoreClick(conversation) },
-                            onArchiveClick = { onSwipeArchive(conversation.id) },
-                        ) {
-                            ConversationRow(
-                                conversation = conversation,
-                                onClick = { onConversationClick(conversation.id) },
-                                showDivider = index < uiState.conversations.size - 1,
-                            )
+            when {
+                uiState.isLoading -> {
+                    Column(modifier = Modifier.weight(1f)) {
+                        repeat(8) { index ->
+                            ShimmerRow(showDivider = index < 7)
+                        }
+                    }
+                }
+                !uiState.isEditMode && uiState.conversations.isEmpty() -> {
+                    EmptyChatsState(modifier = Modifier.weight(1f))
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        itemsIndexed(
+                            items = uiState.conversations,
+                            key = { _, conv -> conv.id },
+                        ) { index, conversation ->
+                            if (uiState.isEditMode) {
+                                ConversationRow(
+                                    conversation = conversation,
+                                    onClick = { onToggleSelection(conversation.id) },
+                                    isEditMode = true,
+                                    isSelected = conversation.id in uiState.selectedIds,
+                                    showDivider = index < uiState.conversations.size - 1,
+                                )
+                            } else {
+                                SwipeableRow(
+                                    rowId = conversation.id,
+                                    isOpen = openRowId == conversation.id,
+                                    onOpenChanged = { newId -> openRowId = newId },
+                                    onMoreClick = { onMoreClick(conversation) },
+                                    onArchiveClick = { onSwipeArchive(conversation.id) },
+                                ) {
+                                    ConversationRow(
+                                        conversation = conversation,
+                                        onClick = { onConversationClick(conversation.id) },
+                                        showDivider = index < uiState.conversations.size - 1,
+                                    )
+                                }
+                            }
                         }
                     }
                 }

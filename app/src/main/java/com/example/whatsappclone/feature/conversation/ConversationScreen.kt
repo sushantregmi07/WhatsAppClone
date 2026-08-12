@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -28,7 +29,9 @@ import com.example.whatsappclone.feature.conversation.component.ChatComposer
 import com.example.whatsappclone.feature.conversation.component.ConversationTopBar
 import com.example.whatsappclone.feature.conversation.component.DateSeparator
 import com.example.whatsappclone.feature.conversation.component.DocumentMessageBubble
+import com.example.whatsappclone.feature.conversation.component.EmptyConversationState
 import com.example.whatsappclone.feature.conversation.component.MessageBubble
+import com.example.whatsappclone.ui.theme.ActionBlue
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -110,66 +113,79 @@ fun ConversationScreen(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(
-                    items = conversationItems,
-                    key = { item ->
-                        when (item) {
-                            is ConversationItem.DateHeader -> item.key
-                            is ConversationItem.MessageItem -> item.message.id
-                        }
-                    },
-                ) { item ->
-                    when (item) {
-                        is ConversationItem.DateHeader -> {
-                            DateSeparator(dateText = item.dateText)
-                        }
-                        is ConversationItem.MessageItem -> {
-                            val msg = item.message
-                            val timestamp = msg.sentAt
-                                .atZone(ZoneId.systemDefault())
-                                .format(timeFormatter)
-
-                            Spacer(modifier = Modifier.height(
-                                if (msg.direction == MessageDirection.RECEIVED) 4.dp else 2.dp
-                            ))
-
-                            when (val content = msg.content) {
-                                is MessageContent.Text -> {
-                                    MessageBubble(
-                                        text = content.value,
-                                        timestamp = timestamp,
-                                        direction = msg.direction,
-                                        deliveryStatus = msg.deliveryStatus,
-                                    )
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(
+                        color = ActionBlue,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
+                uiState.messages.isEmpty() -> {
+                    EmptyConversationState(modifier = Modifier.fillMaxSize())
+                }
+                else -> {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(
+                            items = conversationItems,
+                            key = { item ->
+                                when (item) {
+                                    is ConversationItem.DateHeader -> item.key
+                                    is ConversationItem.MessageItem -> item.message.id
                                 }
-                                is MessageContent.Document -> {
-                                    DocumentMessageBubble(
-                                        fileName = content.fileName,
-                                        sizeLabel = content.sizeLabel,
-                                        extension = content.extension,
-                                        timestamp = timestamp,
-                                        deliveryStatus = msg.deliveryStatus,
-                                    )
+                            },
+                        ) { item ->
+                            when (item) {
+                                is ConversationItem.DateHeader -> {
+                                    DateSeparator(dateText = item.dateText)
                                 }
-                                is MessageContent.Voice,
-                                is MessageContent.Photo -> {
-                                    MessageBubble(
-                                        text = when (content) {
-                                            is MessageContent.Voice -> "Voice: ${content.durationLabel}"
-                                            else -> "Photo"
-                                        },
-                                        timestamp = timestamp,
-                                        direction = msg.direction,
-                                        deliveryStatus = msg.deliveryStatus,
-                                    )
+                                is ConversationItem.MessageItem -> {
+                                    val msg = item.message
+                                    val timestamp = msg.sentAt
+                                        .atZone(ZoneId.systemDefault())
+                                        .format(timeFormatter)
+
+                                    Spacer(modifier = Modifier.height(
+                                        if (msg.direction == MessageDirection.RECEIVED) 4.dp else 2.dp
+                                    ))
+
+                                    when (val content = msg.content) {
+                                        is MessageContent.Text -> {
+                                            MessageBubble(
+                                                text = content.value,
+                                                timestamp = timestamp,
+                                                direction = msg.direction,
+                                                deliveryStatus = msg.deliveryStatus,
+                                            )
+                                        }
+                                        is MessageContent.Document -> {
+                                            DocumentMessageBubble(
+                                                fileName = content.fileName,
+                                                sizeLabel = content.sizeLabel,
+                                                extension = content.extension,
+                                                timestamp = timestamp,
+                                                deliveryStatus = msg.deliveryStatus,
+                                            )
+                                        }
+                                        is MessageContent.Voice,
+                                        is MessageContent.Photo -> {
+                                            MessageBubble(
+                                                text = when (content) {
+                                                    is MessageContent.Voice -> "Voice: ${content.durationLabel}"
+                                                    else -> "Photo"
+                                                },
+                                                timestamp = timestamp,
+                                                direction = msg.direction,
+                                                deliveryStatus = msg.deliveryStatus,
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(2.dp))
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(2.dp))
                         }
                     }
                 }
