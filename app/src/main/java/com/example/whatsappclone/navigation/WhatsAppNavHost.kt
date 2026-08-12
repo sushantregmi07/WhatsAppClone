@@ -1,11 +1,10 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.whatsappclone.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -55,7 +54,9 @@ fun WhatsAppNavHost(
                 uiState = uiState,
                 exportEvent = viewModel.exportEvent,
                 onConversationClick = { conversationId ->
-                    navController.navigate(ConversationRoute(contactId = conversationId))
+                    if (navController.currentBackStackEntry?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.RESUMED) == true) {
+                        navController.navigate(ConversationRoute(contactId = conversationId))
+                    }
                 },
                 onEditClick = viewModel::onEditClick,
                 onDoneClick = viewModel::onDoneClick,

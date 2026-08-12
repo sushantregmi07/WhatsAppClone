@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.whatsappclone.domain.model.ConversationSummary
+import com.example.whatsappclone.feature.chats.component.BroadcastNewGroupRow
 import com.example.whatsappclone.feature.chats.component.ChatActionSheet
 import com.example.whatsappclone.feature.chats.component.ChatsTopBar
 import com.example.whatsappclone.feature.chats.component.ConversationRow
@@ -158,6 +159,8 @@ fun ChatsScreen(
 
             if (uiState.isEditMode) {
                 EditModeHeader()
+            } else if (!uiState.isLoading) {
+                BroadcastNewGroupRow()
             }
 
             when {

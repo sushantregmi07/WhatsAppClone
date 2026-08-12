@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.whatsappclone.ui.components.AvatarPlaceholder
-import com.example.whatsappclone.ui.components.CircularCheckbox
+import com.example.whatsappclone.feature.chats.component.CircularCheckbox
 import com.example.whatsappclone.ui.components.DocumentFileIcon
 import com.example.whatsappclone.ui.components.ReadReceiptIcon
 
@@ -138,12 +138,12 @@ private fun DesignSystemPreview() {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    CircularCheckbox(checked = false, onCheckedChange = {})
+                    CircularCheckbox(checked = false)
                     Spacer(Modifier.height(4.dp))
                     Text("Unchecked", style = MaterialTheme.typography.labelSmall)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    CircularCheckbox(checked = true, onCheckedChange = {})
+                    CircularCheckbox(checked = true)
                     Spacer(Modifier.height(4.dp))
                     Text("Checked", style = MaterialTheme.typography.labelSmall)
                 }

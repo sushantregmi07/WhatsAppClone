@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.example.whatsappclone.data.repository.InMemoryChatRepository
 import com.example.whatsappclone.data.seed.ChatSeedData
 import com.example.whatsappclone.domain.model.MessageContent
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -31,11 +32,14 @@ class ConversationViewModelTest {
         Dispatchers.resetMain()
     }
 
+    private lateinit var repository: InMemoryChatRepository
+
     private fun createViewModel(conversationId: String): ConversationViewModel {
+        repository = InMemoryChatRepository()
         val savedStateHandle = SavedStateHandle(
             mapOf("contactId" to conversationId),
         )
-        return ConversationViewModel(savedStateHandle, InMemoryChatRepository())
+        return ConversationViewModel(savedStateHandle, repository)
     }
 
     @Test
@@ -95,5 +99,18 @@ class ConversationViewModelTest {
 
         vm.onComposerTextChanged("Updated draft")
         assertEquals("Updated draft", vm.uiState.value.composerText)
+    }
+
+    @Test
+    fun sendMessage_updatesConversationSummaryPreview() = runTest {
+        val vm = createViewModel(ChatSeedData.ID_MARTHA)
+        val uniqueText = "M10 round-trip test ${System.nanoTime()}"
+
+        vm.onComposerTextChanged(uniqueText)
+        vm.sendMessage()
+
+        val summary = repository.observeConversations().first()
+            .first { it.id == ChatSeedData.ID_MARTHA }
+        assertEquals(uniqueText, (summary.latestMessage as? MessageContent.Text)?.value)
     }
 }

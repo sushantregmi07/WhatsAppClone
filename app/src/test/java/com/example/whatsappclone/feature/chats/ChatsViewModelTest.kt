@@ -283,4 +283,44 @@ class ChatsViewModelTest {
         assertEquals(countBefore - 1, state.conversations.size)
         assertFalse(state.conversations.any { it.id == ChatSeedData.ID_MARTIN })
     }
+
+    @Test
+    fun `onDismissActionSheet clears showClearConfirmation too`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
+        val target = viewModel.uiState.value.conversations.first { it.id == ChatSeedData.ID_MARTHA }
+        viewModel.onMoreClick(target)
+        viewModel.onClearChatRequested()
+        assertTrue(viewModel.uiState.value.showClearConfirmation)
+
+        viewModel.onDismissActionSheet()
+
+        val state = viewModel.uiState.value
+        assertNull(state.actionSheetTarget)
+        assertFalse(state.showClearConfirmation)
+    }
+
+    @Test
+    fun `selection does not retain deleted conversation IDs`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
+        viewModel.onEditClick()
+        viewModel.onToggleSelection(ChatSeedData.ID_MARTIN)
+        viewModel.onToggleSelection(ChatSeedData.ID_MARTHA)
+        assertEquals(2, viewModel.uiState.value.selectedIds.size)
+
+        viewModel.onDoneClick()
+
+        val target = viewModel.uiState.value.conversations.first { it.id == ChatSeedData.ID_MARTIN }
+        viewModel.onMoreClick(target)
+        viewModel.onDeleteChatConfirmedFromSheet()
+
+        viewModel.onEditClick()
+        viewModel.onToggleSelection(ChatSeedData.ID_MARTHA)
+
+        val state = viewModel.uiState.value
+        assertFalse(ChatSeedData.ID_MARTIN in state.selectedIds)
+        assertTrue(ChatSeedData.ID_MARTHA in state.selectedIds)
+        assertFalse(state.conversations.any { it.id == ChatSeedData.ID_MARTIN })
+    }
 }
