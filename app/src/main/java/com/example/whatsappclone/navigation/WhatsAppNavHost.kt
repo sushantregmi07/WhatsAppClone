@@ -15,9 +15,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.whatsappclone.feature.chats.ChatsScreen
 import com.example.whatsappclone.feature.chats.ChatsViewModel
+import com.example.whatsappclone.feature.conversation.ConversationScreen
+import com.example.whatsappclone.feature.conversation.ConversationViewModel
 
 @Composable
 fun WhatsAppNavHost(
@@ -45,9 +46,16 @@ fun WhatsAppNavHost(
             )
         }
 
-        composable<ConversationRoute> { backStackEntry ->
-            val route = backStackEntry.toRoute<ConversationRoute>()
-            PlaceholderScreen("Conversation: ${route.contactId}")
+        composable<ConversationRoute> {
+            val viewModel: ConversationViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ConversationScreen(
+                uiState = uiState,
+                onBackClick = { navController.popBackStack() },
+                onComposerTextChanged = viewModel::onComposerTextChanged,
+                onSendClick = viewModel::sendMessage,
+            )
         }
     }
 }
