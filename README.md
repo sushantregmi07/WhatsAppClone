@@ -131,7 +131,3 @@ The app ships with 8 pre-seeded conversations containing deterministic messages 
 - **Photo** — camera icon previews on the chats list
 
 Each conversation has incoming and outgoing messages with explicit timestamps and delivery statuses (Sent, Delivered, Read), ensuring the Chats list preview always matches the actual latest message.
-
-## License
-
-This project is for educational and assessment purposes.
